@@ -1,14 +1,15 @@
 <template>
   <header class="header">
-    <nav class="navbar">
+    <nav class="navbar" :class="$route.path === '/' ? '' : 'with-background'">
       <div class="container">
         <div class="navbar-brand">
-          <a
+          <router-link
+            :to="{ name: 'home' }"
             class="navbar-item has-text-white is-size-2 has-text-weight-bold"
             href="#"
           >
-            Your App
-          </a>
+            exchangario
+          </router-link>
           <span
             role="button"
             tabindex="0"
@@ -23,14 +24,28 @@
         <div id="navbar-menu" class="navbar-menu">
           <div class="navbar-end">
             <!-- Loop through the navigation items -->
-            <a class="navbar-item nav-home" href="#">Home</a>
-            <a class="navbar-item nav-style-guide" href="#">About</a>
-            <a class="navbar-item nav-features" href="#">FAQ</a>
-            <a class="navbar-item nav-tech" href="#">Login</a>
-            <a class="navbar-item nav-web" href="#">Register</a>
+
+            <router-link
+              v-for="item in menuItems"
+              :key="item"
+              class="navbar-item nav-style-guide"
+              :to="item.link"
+              >{{ item.text }}</router-link
+            >
           </div>
         </div>
       </div>
     </nav>
   </header>
 </template>
+
+<script>
+export default {
+  props: {
+    menuItems: {
+      type: Array,
+      required: true,
+    },
+  },
+};
+</script>
