@@ -9,11 +9,12 @@
               <div class="control">
                 <input
                   class="input is-large"
+                  v-model="form.email"
                   type="email"
                   placeholder="Email"
-                  autocomplete="email">
-                <div
-                  class="form-error">
+                  autocomplete="email"
+                />
+                <div class="form-error">
                   <div class="help is-danger">Invalid Value</div>
                 </div>
               </div>
@@ -24,16 +25,19 @@
                   class="input is-large"
                   type="text"
                   placeholder="Username"
-                >
+                  v-model="form.username"
+                />
               </div>
             </div>
             <div class="field">
               <div class="control">
                 <input
                   class="input is-large"
+                  v-model="form.password"
                   type="password"
                   placeholder="Password"
-                  autocomplete="current-password">
+                  autocomplete="current-password"
+                />
               </div>
             </div>
             <div class="field">
@@ -42,61 +46,81 @@
                   class="input is-large"
                   type="password"
                   placeholder="Repeat the password"
-                >
+                  v-model="form.passwordConfirmation"
+                />
               </div>
             </div>
             <button
               type="button"
-              class="button is-block is-info is-large is-fullwidth">
+              @click="singUp"
+              class="button is-block is-info is-large is-fullwidth"
+            >
               Sign Up
             </button>
           </form>
         </div>
         <p class="has-text-grey">
-          <a>Sign In With Google</a>&nbsp;
-          <a>Sign Up</a>&nbsp;·&nbsp;
+          <a>Sign In With Google</a>&nbsp; <a>Sign Up</a>&nbsp;·&nbsp;
           <a href="../">Need Help?</a>
         </p>
       </div>
     </div>
   </div>
 </template>
-
 <script>
+export default {
+  data() {
+    return {
+      form: {
+        email: '',
+        username: '',
+        password: '',
+        passwordConfirmation: '',
+      },
+    };
+  },
+  methods: {
+    singUp() {
+      this.$store.dispatch('user/register', this.form);
+    },
+  },
+};
 </script>
 <style scoped>
-  /* Left formatting  */
-  /* .form-error {
+/* Left formatting  */
+/* .form-error {
     text-align: initial;
   } */
-  .hero.is-success {
-    background: #F2F6FA;
-  }
-  .hero .nav, .hero.is-success .nav {
-    -webkit-box-shadow: none;
-    box-shadow: none;
-  }
-  .box {
-    margin-top: 1rem;
-  }
-  .avatar {
-    margin-top: -70px;
-    padding-bottom: 20px;
-  }
-  .avatar img {
-    padding: 5px;
-    background: #fff;
-    border-radius: 50%;
-    -webkit-box-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1);
-    box-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1);
-  }
-  input {
-    font-weight: 300;
-  }
-  p {
-    font-weight: 700;
-  }
-  p.subtitle {
-    padding-top: 1rem;
-  }
+.hero.is-success {
+  background: #f2f6fa;
+}
+.hero .nav,
+.hero.is-success .nav {
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+.box {
+  margin-top: 1rem;
+}
+.avatar {
+  margin-top: -70px;
+  padding-bottom: 20px;
+}
+.avatar img {
+  padding: 5px;
+  background: #fff;
+  border-radius: 50%;
+  -webkit-box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1),
+    0 0 0 1px rgba(10, 10, 10, 0.1);
+  box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);
+}
+input {
+  font-weight: 300;
+}
+p {
+  font-weight: 700;
+}
+p.subtitle {
+  padding-top: 1rem;
+}
 </style>
