@@ -21,7 +21,7 @@ const mutations = {
 
 const actions = {
   async register(context, { email, password }) {
-    context.commit('getUserStart')
+    context.commit('getUserStart');
     const auth = getAuth();
 
     try {
@@ -31,11 +31,14 @@ const actions = {
         password
       );
       alert('User has been registered!');
-      context.commit('getUserSuccess')
+      context.commit('getUserSuccess');
+      context.dispatch('toast/success', 'You have successfully registered', {
+        root: true,
+      });
       return userCredentials.user;
     } catch (e) {
-      context.commit('getUserFailer',e.message)
-      console.error(e.message);
+      context.commit('getUserFailer', e.message);
+      context.dispatch('toast/error', e.message, { root: true });
     }
   },
 };
