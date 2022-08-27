@@ -53,6 +53,7 @@
             <button
               type="button"
               @click="singUp"
+              :disabled="isLoading"
               class="button is-block is-info is-large is-fullwidth"
             >
               Sign Up
@@ -68,6 +69,7 @@
   </div>
 </template>
 <script>
+import { mapState } from 'vuex';
 export default {
   data() {
     return {
@@ -79,6 +81,12 @@ export default {
       },
     };
   },
+  computed: {
+    ...mapState({
+      isLoading: ({ user }) => user.isLoading,
+      errorFire: ({ user }) => user.errorFire,
+    }),
+  },
   methods: {
     singUp() {
       this.$store.dispatch('user/register', this.form);
@@ -87,10 +95,6 @@ export default {
 };
 </script>
 <style scoped>
-/* Left formatting  */
-/* .form-error {
-    text-align: initial;
-  } */
 .hero.is-success {
   background: #f2f6fa;
 }
