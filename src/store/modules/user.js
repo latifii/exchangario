@@ -1,4 +1,6 @@
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
+import { db } from '../../db';
 
 const state = {
   isLoading: false,
@@ -20,26 +22,35 @@ const mutations = {
 };
 
 const actions = {
-  async register(context, { email, password }) {
+  async register(context, { email, password, username }) {
     context.commit('getUserStart');
     const auth = getAuth();
 
     try {
-      const userCredentials = await createUserWithEmailAndPassword(
+      const { user } = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
-      alert('User has been registered!');
+      await context.dispatch('createUserProfile', {
+        id: user.uid,
+        username,
+        avatar:
+          'https://www.pinclipart.com/picdir/middle/133-1331433_free-user-avatar-icons-happy-flat-design-png.png',
+        credit: 0,
+        exchanges: [],
+      });
       context.commit('getUserSuccess');
       context.dispatch('toast/success', 'You have successfully registered', {
         root: true,
       });
-      return userCredentials.user;
     } catch (e) {
       context.commit('getUserFailer', e.message);
       context.dispatch('toast/error', e.message, { root: true });
     }
+  },
+  async createUserProfile(_, { id, ...profile }) {
+    await setDoc(doc(db, 'users', id), profile);
   },
 };
 

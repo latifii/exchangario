@@ -9,5 +9,6 @@ export default createStore({
     exchange,
     user,
     toast,
+    
   },
 });
