@@ -1,5 +1,9 @@
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+} from 'firebase/auth';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../../db';
 
 const state = {
@@ -22,6 +26,21 @@ const mutations = {
 };
 
 const actions = {
+  onAuthChange(context) {
+    onAuthStateChanged(getAuth(), async (user) => {
+      if (user) {
+        const userProfile = await context.dispatch('getUserProfile', user.uid);
+        console.log('user login', userProfile);
+      } else {
+        console.log('Logged out');
+      }
+    });
+  },
+  async getUserProfile(_, id) {
+    const docRef = doc(db, 'users', id);
+    const docSnap = await getDoc(docRef);
+    return docSnap.data();
+  },
   async register(context, { email, password, username }) {
     context.commit('getUserStart');
     const auth = getAuth();
