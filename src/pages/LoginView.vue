@@ -11,9 +11,11 @@
                 <input
                   class="input is-large"
                   type="email"
+                  v-model="form.email"
                   placeholder="Your Email"
                   autofocus=""
-                  autocomplete="email">
+                  autocomplete="email"
+                />
               </div>
             </div>
             <div class="field">
@@ -21,13 +23,17 @@
                 <input
                   class="input is-large"
                   type="password"
+                  v-model="form.password"
                   placeholder="Your Password"
-                  autocomplete="current-password">
+                  autocomplete="current-password"
+                />
               </div>
             </div>
             <button
               type="button"
               class="button is-block is-info is-large is-fullwidth"
+              @click="login"
+              :disabled="isLoading"
             >
               Sign In
             </button>
@@ -43,39 +49,68 @@
   </div>
 </template>
 <script>
+import useAuth from '@/composition/useAuth'
 export default {
-}
+  data() {
+    return {
+      form: {
+        email: '',
+        password: '',
+      },
+    };
+  },
+  setup(){
+    return useAuth()
+  },
+  methods: {
+    login() {
+      return this.$store.dispatch('user/login', this.form);
+    },
+  },
+  watch: {
+    isLoading(processing, preProcessing) {
+      if (!processing && preProcessing && !this.error) {
+        this.$router.push('/');
+      }
+      else{
+        console.log('bb')
+      }
+    },
+  },
+};
 </script>
 
 <style scoped>
-  .hero.is-success {
-    background: #F2F6FA;
-  }
-  .hero .nav, .hero.is-success .nav {
-    -webkit-box-shadow: none;
-    box-shadow: none;
-  }
-  .box {
-    margin-top: 1rem;
-  }
-  .avatar {
-    margin-top: -70px;
-    padding-bottom: 20px;
-  }
-  .avatar img {
-    padding: 5px;
-    background: #fff;
-    border-radius: 50%;
-    -webkit-box-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1);
-    box-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1);
-  }
-  input {
-    font-weight: 300;
-  }
-  p {
-    font-weight: 700;
-  }
-  p.subtitle {
-    padding-top: 1rem;
-  }
+.hero.is-success {
+  background: #f2f6fa;
+}
+.hero .nav,
+.hero.is-success .nav {
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+.box {
+  margin-top: 1rem;
+}
+.avatar {
+  margin-top: -70px;
+  padding-bottom: 20px;
+}
+.avatar img {
+  padding: 5px;
+  background: #fff;
+  border-radius: 50%;
+  -webkit-box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1),
+    0 0 0 1px rgba(10, 10, 10, 0.1);
+  box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);
+}
+input {
+  font-weight: 300;
+}
+p {
+  font-weight: 700;
+}
+p.subtitle {
+  padding-top: 1rem;
+}
 </style>

@@ -63,7 +63,9 @@ a {
 .has-text-weight-extra-bold {
   font-weight: $font-weight-extra-bold;
 }
-
+.cursor-pointer {
+  cursor: pointer;
+}
 // Navbar
 .header {
   position: absolute;

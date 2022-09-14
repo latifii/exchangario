@@ -69,7 +69,8 @@
   </div>
 </template>
 <script>
-import { mapState } from 'vuex';
+// import { mapState } from 'vuex';
+import useAuth from '@/composition/useAuth'
 export default {
   data() {
     return {
@@ -81,11 +82,8 @@ export default {
       },
     };
   },
-  computed: {
-    ...mapState({
-      isLoading: ({ user }) => user.isLoading,
-      errorFire: ({ user }) => user.error,
-    }),
+  setup(){
+     return useAuth()
   },
   methods: {
     singUp() {
@@ -94,8 +92,11 @@ export default {
   },
   watch: {
     isLoading(processing, preProcessing) {
-      if (!processing && preProcessing && !this.errorFire) {
+      if (!processing && preProcessing && !this.error) {
         this.$router.push('/');
+      }
+      else{
+        console.log('bb')
       }
     },
   },

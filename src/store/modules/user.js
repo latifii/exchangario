@@ -2,6 +2,8 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
+  signOut,
+  signInWithEmailAndPassword,
 } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../../db';
@@ -12,15 +14,21 @@ const state = {
   data: null,
 };
 
+const getters = {
+  isAuthenticated(state) {
+    return !!state.data;
+  },
+};
+
 const mutations = {
-  getUserStart(state) {
+  setUserStart(state) {
     state.isLoading = true;
     state.error = null;
   },
-  getUserSuccess(state) {
+  setUserSuccess(state) {
     state.isLoading = false;
   },
-  getUserFailer(state, payload) {
+  setUserFailer(state, payload) {
     state.isLoading = false;
     state.error = payload;
   },
@@ -34,7 +42,7 @@ const actions = {
     const auth = getAuth();
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-         await context.dispatch('getUserProfile', user);
+        await context.dispatch('getUserProfile', user);
       } else {
         console.log('Logged out');
       }
@@ -52,9 +60,42 @@ const actions = {
     };
     context.commit('setUser', userWithProfile);
   },
-
+  // Login user
+  async login(context, { email, password }) {
+    context.commit('setUserStart');
+    const auth = getAuth();
+    try {
+      const { user } = await signInWithEmailAndPassword(auth, email, password);
+      context.dispatch('getUserProfile', user);
+      context.commit('setUserSuccess');
+      context.dispatch('toast/success', 'You have successfully login', {
+        root: true,
+      });
+    } catch (error) {
+      context.commit('setUserFailer', error.message);
+      context.dispatch('toast/error', error.message, { root: true });
+    }
+  },
+  // logout user
+  async logout(context) {
+    context.commit('setUserStart');
+    const auth = getAuth();
+    try {
+      await signOut(auth);
+      context.commit('setUserSuccess');
+      context.commit('setUser', null);
+      context.dispatch('toast/success', 'You have successfully logout', {
+        root: true,
+      });
+    } catch (error) {
+      context.commit('setUserFailer', error.message);
+      context.dispatch('toast/error', error.message, { root: true });
+      console.log(error.message);
+    }
+  },
+  // l
   async register(context, { email, password, username }) {
-    context.commit('getUserStart');
+    context.commit('setUserStart');
     const auth = getAuth();
 
     try {
@@ -71,12 +112,12 @@ const actions = {
         credit: 0,
         exchanges: [],
       });
-      context.commit('getUserSuccess');
+      context.commit('setUserSuccess');
       context.dispatch('toast/success', 'You have successfully registered', {
         root: true,
       });
     } catch (e) {
-      context.commit('getUserFailer', e.message);
+      context.commit('setUserFailer', e.message);
       context.dispatch('toast/error', e.message, { root: true });
     }
   },
@@ -89,6 +130,7 @@ const actions = {
 export default {
   namespaced: true,
   state,
+  getters,
   mutations,
   actions,
 };
