@@ -90,7 +90,6 @@ export default {
   methods: {
     singUp() {
       this.$store.dispatch('user/register', this.form);
-      console.log('method',this.errorFire)
     },
   },
   watch: {

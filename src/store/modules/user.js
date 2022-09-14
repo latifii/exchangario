@@ -9,6 +9,7 @@ import { db } from '../../db';
 const state = {
   isLoading: false,
   error: null,
+  data: null,
 };
 
 const mutations = {
@@ -23,6 +24,9 @@ const mutations = {
     state.isLoading = false;
     state.error = payload;
   },
+  setUser(state, user) {
+    state.data = user;
+  },
 };
 
 const actions = {
@@ -30,18 +34,25 @@ const actions = {
     const auth = getAuth();
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        const userProfile = await context.dispatch('getUserProfile', user.uid);
-        console.log('user login', userProfile);
+         await context.dispatch('getUserProfile', user);
       } else {
         console.log('Logged out');
       }
     });
   },
-  async getUserProfile(_, id) {
-    const docRef = doc(db, 'users', id);
+  // Get user profile
+  async getUserProfile(context, user) {
+    const docRef = doc(db, 'users', user.uid);
     const docSnap = await getDoc(docRef);
-    return docSnap.data();
+    const userProfile = docSnap.data();
+    const userWithProfile = {
+      id: user.uid,
+      email: user.email,
+      ...userProfile,
+    };
+    context.commit('setUser', userWithProfile);
   },
+
   async register(context, { email, password, username }) {
     context.commit('getUserStart');
     const auth = getAuth();
@@ -69,6 +80,7 @@ const actions = {
       context.dispatch('toast/error', e.message, { root: true });
     }
   },
+  // Create user profile
   async createUserProfile(_, { id, ...profile }) {
     await setDoc(doc(db, 'users', id), profile);
   },
