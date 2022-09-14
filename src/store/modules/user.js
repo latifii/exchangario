@@ -27,7 +27,8 @@ const mutations = {
 
 const actions = {
   onAuthChange(context) {
-    onAuthStateChanged(getAuth(), async (user) => {
+    const auth = getAuth();
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
         const userProfile = await context.dispatch('getUserProfile', user.uid);
         console.log('user login', userProfile);

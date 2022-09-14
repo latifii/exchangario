@@ -84,12 +84,20 @@ export default {
   computed: {
     ...mapState({
       isLoading: ({ user }) => user.isLoading,
-      errorFire: ({ user }) => user.errorFire,
+      errorFire: ({ user }) => user.error,
     }),
   },
   methods: {
     singUp() {
       this.$store.dispatch('user/register', this.form);
+      console.log('method',this.errorFire)
+    },
+  },
+  watch: {
+    isLoading(processing, preProcessing) {
+      if (!processing && preProcessing && !this.errorFire) {
+        this.$router.push('/');
+      }
     },
   },
 };
