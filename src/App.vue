@@ -26,14 +26,6 @@ export default {
           text: 'FAQ',
           link: '/faq',
         },
-        {
-          text: 'Login',
-          link: '/login',
-        },
-        {
-          text: 'Register',
-          link: '/register',
-        },
       ],
     };
   },

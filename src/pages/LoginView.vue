@@ -49,7 +49,7 @@
   </div>
 </template>
 <script>
-import useAuth from '@/composition/useAuth'
+import useAuth from '@/composition/useAuth';
 export default {
   data() {
     return {
@@ -59,8 +59,8 @@ export default {
       },
     };
   },
-  setup(){
-    return useAuth()
+  setup() {
+    return useAuth();
   },
   methods: {
     login() {
@@ -68,12 +68,9 @@ export default {
     },
   },
   watch: {
-    isLoading(processing, preProcessing) {
-      if (!processing && preProcessing && !this.error) {
+    isAuthenticated(isAuth) {
+      if (isAuth) {
         this.$router.push('/');
-      }
-      else{
-        console.log('bb')
       }
     },
   },

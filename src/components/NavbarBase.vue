@@ -32,10 +32,28 @@
               :key="item"
               class="navbar-item nav-style-guide"
               :to="item.link"
-              >{{ item.text }}</router-link>
-            <div class="navbar-item cursor-pointer" v-if="isAuthenticated" @click="logoutHandle">
-              Logout
-            </div>
+              >{{ item.text }}</router-link
+            >
+            <template v-if="isAuthenticated">
+              <div
+                class="navbar-item cursor-pointer"
+                @click="logoutHandle"
+              >
+                Logout
+              </div>
+            </template>
+            <template v-else>
+              <router-link
+                class="navbar-item nav-style-guide"
+                :to="{ name: 'register' }"
+                >Register</router-link
+              >
+              <router-link
+                class="navbar-item nav-style-guide"
+                :to="{ name: 'login' }"
+                >Login</router-link
+              >
+            </template>
           </div>
         </div>
       </div>
@@ -52,10 +70,10 @@ export default {
       required: true,
     },
   },
-  methods:{
-    logoutHandle(){
-      return this.$store.dispatch('user/logout')
-    }
+  methods: {
+    logoutHandle() {
+      return this.$store.dispatch('user/logout');
+    },
   },
   setup() {
     return useAuth();
