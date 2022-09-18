@@ -3,6 +3,7 @@ import Home from '@/pages/HomeView.vue';
 import About from '@/pages/AboutView.vue';
 import Faq from '@/pages/FaqView.vue';
 import Login from '@/pages/LoginView.vue';
+import Profile from '@/pages/ProfileView.vue';
 import Register from '@/pages/RegisterView.vue';
 import { getAuth } from 'firebase/auth';
 
@@ -21,6 +22,11 @@ const routes = [
     path: '/faq',
     name: 'faq',
     component: Faq,
+  },
+  {
+    path: '/profile',
+    name: 'profile',
+    component: Profile,
   },
   {
     path: '/login',

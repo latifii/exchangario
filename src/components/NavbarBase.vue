@@ -35,6 +35,11 @@
               >{{ item.text }}</router-link
             >
             <template v-if="isAuthenticated">
+             <router-link
+                class="navbar-item nav-style-guide"
+                :to="{ name: 'profile' }"
+                >Profile</router-link
+              >
               <div
                 class="navbar-item cursor-pointer"
                 @click="logoutHandle"
