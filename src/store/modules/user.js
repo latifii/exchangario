@@ -5,7 +5,7 @@ import {
   signOut,
   signInWithEmailAndPassword,
 } from 'firebase/auth';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../db';
 
 const state = {
@@ -35,12 +35,14 @@ const mutations = {
   setUser(state, user) {
     state.data = user;
   },
+  updateProfile(state, profile) {
+    state.data = { ...state.data, ...profile };
+  },
 };
 
 const actions = {
   onAuthChange(context) {
-    const auth = getAuth();
-    onAuthStateChanged(auth, async (user) => {
+    onAuthStateChanged(getAuth(), async (user) => {
       if (user) {
         await context.dispatch('getUserProfile', user);
       } else {
@@ -48,16 +50,39 @@ const actions = {
       }
     });
   },
+  // Update User
+  async updateProfile(context, { data, onSuccess }) {
+    context.commit('setUserStart');
+    try {
+      const docRef = doc(db, 'users', data.id);
+      await updateDoc(docRef, data);
+      context.commit('updateProfile', data);
+      context.commit('setUserSuccess');
+      context.dispatch(
+        'toast/success',
+        'You have successfully Updata Profile',
+        {
+          root: true,
+        }
+      );
+      onSuccess();
+    } catch (error) {
+      context.commit('setUserFailer', error.message);
+      context.dispatch('toast/error', error.message, { root: true });
+    }
+  },
   // Get user profile
   async getUserProfile(context, user) {
     const docRef = doc(db, 'users', user.uid);
     const docSnap = await getDoc(docRef);
     const userProfile = docSnap.data();
+
     const userWithProfile = {
       id: user.uid,
       email: user.email,
       ...userProfile,
     };
+    // console.lo/g(user)
     context.commit('setUser', userWithProfile);
   },
   // Login user

@@ -27,6 +27,7 @@ const routes = [
     path: '/profile',
     name: 'profile',
     component: Profile,
+    meta: { onlyUser: true },
   },
   {
     path: '/login',
@@ -54,8 +55,14 @@ router.beforeEach(async (to, _, next) => {
     } else {
       next();
     }
-  }else{
-    next()
+  } else if (to.meta.onlyUser) {
+    if (!isAuth) {
+      next({ name: 'login' });
+    } else {
+      next();
+    }
+  } else {
+    next();
   }
 });
 

@@ -77,7 +77,7 @@ export default {
   },
   methods: {
     logoutHandle() {
-      return this.$store.dispatch('user/logout');
+       this.$store.dispatch('user/logout');
     },
   },
   setup() {
