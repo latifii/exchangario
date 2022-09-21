@@ -2,7 +2,7 @@
   <div class="page-wrapper">
     <div class="container">
       <div class="form-container">
-        <form>
+        <form @submit.prevent="sendForm">
           <div class="field">
             <label class="label">Type</label>
             <div class="control">
@@ -19,13 +19,11 @@
             <div class="control">
               <input
                 class="input"
+                v-model="form.title"
                 type="text"
                 placeholder="Some Nice Product"
               />
-              <div
-                class="form-error">
-                <div class="help is-danger">Error Message</div>
-              </div>
+              <form-errors :errors="v$.form.title.$errors" />
             </div>
           </div>
           <div class="field">
@@ -33,8 +31,11 @@
             <div class="control">
               <textarea
                 class="textarea"
-                placeholder="Some catchy description about product">
+                v-model="form.desc"
+                placeholder="Some catchy description about product"
+              >
               </textarea>
+              <form-errors :errors="v$.form.desc.$errors" />
             </div>
           </div>
           <div class="field">
@@ -42,8 +43,11 @@
             <div class="control">
               <input
                 class="input"
+                v-model="form.url"
                 type="text"
-                placeholder="https://unsplash....">
+                placeholder="https://unsplash...."
+              />
+              <form-errors :errors="v$.form.url.$errors" />
             </div>
           </div>
           <div class="field">
@@ -51,8 +55,11 @@
             <div class="control">
               <input
                 class="input"
+                v-model="form.price"
                 type="number"
-                placeholder="249">
+                placeholder="249"
+              />
+              <form-errors :errors="v$.form.price.$errors" />
             </div>
           </div>
           <div class="field">
@@ -60,8 +67,11 @@
             <div class="control">
               <input
                 class="input"
+                v-model="form.country"
                 type="text"
-                placeholder="Slovakia">
+                placeholder="Slovakia"
+              />
+              <form-errors :errors="v$.form.country.$errors" />
             </div>
           </div>
           <div class="field">
@@ -69,8 +79,11 @@
             <div class="control">
               <input
                 class="input"
+                v-model="form.city"
                 type="text"
-                placeholder="Bratislava">
+                placeholder="Bratislava"
+              />
+              <form-errors :errors="v$.form.city.$errors" />
             </div>
           </div>
 
@@ -80,17 +93,18 @@
             <div class="control">
               <input
                 class="input"
+                v-model="form.tags"
                 type="text"
-                placeholder="programming">
+                placeholder="programming"
+              />
             </div>
           </div>
           <div class="field is-grouped">
             <div class="control">
-              <button
-                class="button is-link">Submit</button>
+              <button class="button is-link">Submit</button>
             </div>
             <div class="control">
-              <button class="button is-text">Cancel</button>
+              <button type="submit" class="button is-text">Cancel</button>
             </div>
           </div>
         </form>
@@ -100,8 +114,62 @@
 </template>
 
 <script>
+import { useVuelidate } from '@vuelidate/core';
+import {
+  required,
+  url,
+  minLength,
+  minValue,
+  helpers,
+} from '@vuelidate/validators';
+import FormErrors from '@/components/FormErrors.vue';
 export default {
-}
+  components: { FormErrors },
+  setup() {
+    return { v$: useVuelidate() };
+  },
+  data() {
+    return {
+      form: {
+        title: '',
+        desc: '',
+        url: '',
+        price: null,
+        country: '',
+        city: '',
+        tags: [],
+      },
+    };
+  },
+  methods: {
+    async sendForm() {
+      const valid = await this.v$.$validate();
+      if (valid) {
+        alert(JSON.stringify(this.form));
+      }
+    },
+  },
+  validations() {
+    return {
+      form: {
+        title: {
+          required: helpers.withMessage('title cannot be empty', required),
+        },
+        desc: {
+          required,
+          minLength: helpers.withMessage(
+            'Title length should be at least 10!',
+            minLength(10)
+          ),
+        },
+        url: { required, url },
+        price: { required, minValue: minValue(1) },
+        country: { required },
+        city: { required },
+      },
+    };
+  },
+};
 </script>
 
 <style scoped>
